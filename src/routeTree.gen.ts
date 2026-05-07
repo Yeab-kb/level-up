@@ -15,7 +15,14 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppTimerRouteImport } from './routes/_app/timer'
+import { Route as AppTasksRouteImport } from './routes/_app/tasks'
+import { Route as AppSubjectsRouteImport } from './routes/_app/subjects'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppNotesRouteImport } from './routes/_app/notes'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppCalendarRouteImport } from './routes/_app/calendar'
+import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -46,9 +53,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppTimerRoute = AppTimerRouteImport.update({
+  id: '/timer',
+  path: '/timer',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTasksRoute = AppTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSubjectsRoute = AppSubjectsRouteImport.update({
+  id: '/subjects',
+  path: '/subjects',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotesRoute = AppNotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCalendarRoute = AppCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -58,7 +100,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/analytics': typeof AppAnalyticsRoute
+  '/calendar': typeof AppCalendarRoute
   '/dashboard': typeof AppDashboardRoute
+  '/notes': typeof AppNotesRoute
+  '/settings': typeof AppSettingsRoute
+  '/subjects': typeof AppSubjectsRoute
+  '/tasks': typeof AppTasksRoute
+  '/timer': typeof AppTimerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -66,7 +115,14 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/analytics': typeof AppAnalyticsRoute
+  '/calendar': typeof AppCalendarRoute
   '/dashboard': typeof AppDashboardRoute
+  '/notes': typeof AppNotesRoute
+  '/settings': typeof AppSettingsRoute
+  '/subjects': typeof AppSubjectsRoute
+  '/tasks': typeof AppTasksRoute
+  '/timer': typeof AppTimerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -76,7 +132,14 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/_app/analytics': typeof AppAnalyticsRoute
+  '/_app/calendar': typeof AppCalendarRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/notes': typeof AppNotesRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/subjects': typeof AppSubjectsRoute
+  '/_app/tasks': typeof AppTasksRoute
+  '/_app/timer': typeof AppTimerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -86,7 +149,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/signup'
+    | '/analytics'
+    | '/calendar'
     | '/dashboard'
+    | '/notes'
+    | '/settings'
+    | '/subjects'
+    | '/tasks'
+    | '/timer'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -94,7 +164,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/signup'
+    | '/analytics'
+    | '/calendar'
     | '/dashboard'
+    | '/notes'
+    | '/settings'
+    | '/subjects'
+    | '/tasks'
+    | '/timer'
   id:
     | '__root__'
     | '/'
@@ -103,7 +180,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/signup'
+    | '/_app/analytics'
+    | '/_app/calendar'
     | '/_app/dashboard'
+    | '/_app/notes'
+    | '/_app/settings'
+    | '/_app/subjects'
+    | '/_app/tasks'
+    | '/_app/timer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -159,6 +243,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/timer': {
+      id: '/_app/timer'
+      path: '/timer'
+      fullPath: '/timer'
+      preLoaderRoute: typeof AppTimerRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/tasks': {
+      id: '/_app/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof AppTasksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/subjects': {
+      id: '/_app/subjects'
+      path: '/subjects'
+      fullPath: '/subjects'
+      preLoaderRoute: typeof AppSubjectsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notes': {
+      id: '/_app/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof AppNotesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/dashboard': {
       id: '/_app/dashboard'
       path: '/dashboard'
@@ -166,15 +285,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/calendar': {
+      id: '/_app/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof AppCalendarRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/analytics': {
+      id: '/_app/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AppAnalyticsRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
+  AppAnalyticsRoute: typeof AppAnalyticsRoute
+  AppCalendarRoute: typeof AppCalendarRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppNotesRoute: typeof AppNotesRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppSubjectsRoute: typeof AppSubjectsRoute
+  AppTasksRoute: typeof AppTasksRoute
+  AppTimerRoute: typeof AppTimerRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAnalyticsRoute: AppAnalyticsRoute,
+  AppCalendarRoute: AppCalendarRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppNotesRoute: AppNotesRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppSubjectsRoute: AppSubjectsRoute,
+  AppTasksRoute: AppTasksRoute,
+  AppTimerRoute: AppTimerRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
