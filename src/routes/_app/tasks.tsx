@@ -116,7 +116,7 @@ function TasksPage() {
       <TaskModal
         open={open} onClose={() => setOpen(false)} editing={editing}
         subjects={subjects}
-        onSave={(data) => {
+        onSave={(data: any) => {
           if (editing) update.mutate({ id: editing.id, ...data });
           else create.mutate(data as any);
           setOpen(false);

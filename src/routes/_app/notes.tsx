@@ -79,7 +79,7 @@ function NotesPage() {
 
       <NoteModal
         open={open} onClose={() => setOpen(false)} editing={editing}
-        onSave={(data) => { upsert.mutate({ id: editing?.id, ...data }); setOpen(false); }}
+        onSave={(data: any) => { upsert.mutate({ id: editing?.id, ...data }); setOpen(false); }}
       />
     </div>
   );
