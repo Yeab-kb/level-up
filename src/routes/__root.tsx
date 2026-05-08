@@ -8,9 +8,13 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { Toaster } from "sonner";
+import { useEffect, useState } from "react";
 import appCss from "../styles.css?url";
-import { AuthProvider } from "@/lib/auth-context";
+import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { ThemeProvider } from "@/lib/theme-context";
+import { TimerProvider } from "@/lib/timer-context";
+import { Splash } from "@/components/splash";
+import { FloatingTimer } from "@/components/floating-timer";
 
 function NotFoundComponent() {
   return (
@@ -85,10 +89,34 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <Outlet />
-          <Toaster position="top-right" theme="system" richColors closeButton />
+          <TimerProvider>
+            <SplashGate>
+              <Outlet />
+              <FloatingTimer />
+            </SplashGate>
+            <Toaster position="top-right" theme="system" richColors closeButton />
+          </TimerProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
+  );
+}
+
+function SplashGate({ children }: { children: React.ReactNode }) {
+  const { loading } = useAuth();
+  // Keep splash for a minimum duration so it never flashes.
+  const [minHold, setMinHold] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setMinHold(false), 600);
+    return () => clearTimeout(t);
+  }, []);
+  const show = loading || minHold;
+  return (
+    <>
+      <Splash show={show} />
+      <div aria-hidden={show} style={show ? { visibility: "hidden" } : undefined}>
+        {children}
+      </div>
+    </>
   );
 }
