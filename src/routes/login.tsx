@@ -17,27 +17,42 @@ function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
   const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    const next: typeof errors = {};
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) next.email = "Enter a valid email.";
+    if (password.length < 6) next.password = "At least 6 characters.";
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setErrors({});
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      setErrors({ form: error.message });
+      return toast.error(error.message);
+    }
     toast.success("Welcome back!");
     navigate({ to: "/dashboard" });
   };
 
   return <AuthShell title="Welcome back" subtitle="Log in to continue leveling up.">
-    <form onSubmit={onSubmit} className="space-y-4">
-      <Field icon={Mail} label="Email" type="email" value={email} onChange={setEmail} required autoComplete="email" />
-      <Field icon={Lock} label="Password" type="password" value={password} onChange={setPassword} required autoComplete="current-password" />
+    <form onSubmit={onSubmit} className="space-y-4" noValidate>
+      <Field icon={Mail} label="Email" type="email" value={email} onChange={(v) => { setEmail(v); if (errors.email) setErrors({ ...errors, email: undefined }); }} required autoComplete="email" error={errors.email} />
+      <Field icon={Lock} label="Password" type="password" value={password} onChange={(v) => { setPassword(v); if (errors.password) setErrors({ ...errors, password: undefined }); }} required autoComplete="current-password" error={errors.password} />
+      {errors.form && <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">{errors.form}</p>}
       <div className="flex justify-end">
         <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">Forgot password?</Link>
       </div>
-      <button disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-glow disabled:opacity-60">
-        {loading && <Loader2 className="h-4 w-4 animate-spin" />} Log in
+      <button disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-opacity disabled:opacity-60">
+        {loading && <Loader2 className="h-4 w-4 animate-spin" />} {loading ? "Logging in…" : "Log in"}
       </button>
     </form>
     <p className="mt-6 text-center text-sm text-muted-foreground">
@@ -78,7 +93,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
   );
 }
 
-export function Field({ icon: Icon, label, type, value, onChange, required, autoComplete }: { icon: any; label: string; type: string; value: string; onChange: (v: string) => void; required?: boolean; autoComplete?: string }) {
+export function Field({ icon: Icon, label, type, value, onChange, required, autoComplete, error }: { icon: any; label: string; type: string; value: string; onChange: (v: string) => void; required?: boolean; autoComplete?: string; error?: string }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-xs font-medium text-muted-foreground">{label}</span>
@@ -87,9 +102,11 @@ export function Field({ icon: Icon, label, type, value, onChange, required, auto
         <input
           type={type} value={value} required={required} autoComplete={autoComplete}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded-xl border border-input bg-background/60 py-3 pl-10 pr-3 text-sm outline-none ring-offset-2 ring-offset-background transition-colors focus:border-ring focus:ring-2 focus:ring-ring/40"
+          aria-invalid={!!error}
+          className={`w-full rounded-xl border bg-background/60 py-3 pl-10 pr-3 text-sm outline-none ring-offset-2 ring-offset-background transition-colors focus:ring-2 ${error ? "border-destructive focus:border-destructive focus:ring-destructive/30" : "border-input focus:border-ring focus:ring-ring/40"}`}
         />
       </div>
+      {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
     </label>
   );
 }
