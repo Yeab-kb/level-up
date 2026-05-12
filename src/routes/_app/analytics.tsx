@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Trophy, Flame, TrendingUp, Clock } from "lucide-react";
 import { useTasks, useSessions } from "@/lib/data-hooks";
 import { PageHeader } from "@/components/ui-bits";
-import { addDays, format, isSameDay, startOfWeek, subDays } from "date-fns";
+import { addDays, format, isSameDay, subDays } from "date-fns";
 
 export const Route = createFileRoute("/_app/analytics")({ component: AnalyticsPage });
 
