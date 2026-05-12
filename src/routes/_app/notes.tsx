@@ -23,6 +23,7 @@ const colorBg: Record<string,string> = {
 
 function NotesPage() {
   const { data: notes = [] } = useNotes();
+  const { data: tasks = [] } = useTasks();
   const upsert = useUpsertNote();
   const del = useDeleteNote();
   const [open, setOpen] = useState(false);
