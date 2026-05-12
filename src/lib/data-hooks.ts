@@ -125,7 +125,7 @@ export function useDeleteSubject() {
 }
 
 // Notes
-export type Note = { id: string; user_id: string; title: string; content: string | null; color: string; pinned: boolean; subject_id: string | null; created_at: string; updated_at: string };
+export type Note = { id: string; user_id: string; title: string; content: string | null; color: string; pinned: boolean; subject_id: string | null; task_id: string | null; created_at: string; updated_at: string };
 
 export function useNotes() {
   const { user } = useAuth();
