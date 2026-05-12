@@ -20,7 +20,10 @@ export const navItems = [
 export function AppSidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const { user, signOut } = useAuth();
+  const { data: profile } = useProfile();
   const { theme, toggle } = useTheme();
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
+  const initial = (displayName?.[0] ?? user?.email?.[0] ?? "?").toUpperCase();
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar/80 backdrop-blur-xl md:flex">
