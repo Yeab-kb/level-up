@@ -77,21 +77,47 @@ function Stat({ icon: Icon, label, value }: any) {
 }
 
 function Chart({ title, data, max, unit }: { title: string; data: any[]; max: number; unit: string }) {
+  // Build clean rounded scale
+  const niceMax = niceCeil(max);
+  const ticks = [niceMax, Math.round(niceMax * 0.75), Math.round(niceMax * 0.5), Math.round(niceMax * 0.25), 0];
   return (
     <div className="glass-card p-5">
       <h3 className="mb-4 font-display text-lg font-semibold">{title}</h3>
-      <div className="flex h-44 items-end gap-1.5">
-        {data.map((d, i) => (
-          <div key={i} className="group flex flex-1 flex-col items-center gap-1">
-            <span className="text-[10px] opacity-0 group-hover:opacity-100">{d.value}{unit}</span>
-            <motion.div initial={{ height: 0 }} animate={{ height: `${(d.value / max) * 100}%` }} transition={{ delay: i * 0.02 }}
-              className="w-full min-h-[4px] rounded-t gradient-primary opacity-80 group-hover:opacity-100" />
+      <div className="flex gap-3">
+        <div className="flex h-44 flex-col justify-between text-[10px] text-muted-foreground">
+          {ticks.map((t) => <span key={t} className="leading-none">{t}{unit}</span>)}
+        </div>
+        <div className="relative flex-1">
+          <div className="pointer-events-none absolute inset-0 flex flex-col justify-between">
+            {ticks.map((_, i) => <div key={i} className="h-px w-full bg-border/40" />)}
           </div>
-        ))}
+          <div className="relative flex h-44 items-end gap-1.5">
+            {data.map((d, i) => {
+              const pct = niceMax > 0 ? (d.value / niceMax) * 100 : 0;
+              return (
+                <div key={i} className="group relative flex flex-1 flex-col items-center justify-end" title={`${d.label}: ${d.value}${unit}`}>
+                  <span className="pointer-events-none absolute -top-5 rounded bg-popover px-1.5 py-0.5 text-[10px] opacity-0 shadow group-hover:opacity-100">{d.value}{unit}</span>
+                  <motion.div
+                    initial={{ height: 0 }} animate={{ height: `${pct}%` }} transition={{ delay: i * 0.02 }}
+                    className={`w-full rounded-t gradient-primary ${d.value === 0 ? "opacity-20" : "opacity-80 group-hover:opacity-100"}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
-      <div className="mt-2 flex justify-between text-[10px] text-muted-foreground">
+      <div className="mt-2 flex justify-between pl-9 text-[10px] text-muted-foreground">
         <span>{data[0].label}</span><span>{data[data.length - 1].label}</span>
       </div>
     </div>
   );
+}
+
+function niceCeil(n: number) {
+  if (n <= 4) return 4;
+  const pow = Math.pow(10, Math.floor(Math.log10(n)));
+  const norm = n / pow;
+  const nice = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10;
+  return nice * pow;
 }
