@@ -87,30 +87,40 @@ function NotesPage() {
       )}
 
       <NoteModal
-        open={open} onClose={() => setOpen(false)} editing={editing}
+        open={open} onClose={() => setOpen(false)} editing={editing} tasks={tasks}
         onSave={(data: any) => { upsert.mutate({ id: editing?.id, ...data }); setOpen(false); }}
       />
     </div>
   );
 }
 
-function NoteModal({ open, onClose, editing, onSave }: any) {
+function NoteModal({ open, onClose, editing, tasks, onSave }: any) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [color, setColor] = useState("default");
   const [pinned, setPinned] = useState(false);
+  const [taskId, setTaskId] = useState<string>("");
   useEffect(() => {
     setTitle(editing?.title ?? "Untitled");
     setContent(editing?.content ?? "");
     setColor(editing?.color ?? "default");
     setPinned(editing?.pinned ?? false);
+    setTaskId(editing?.task_id ?? "");
   }, [editing?.id]);
 
   return (
     <Modal open={open} onClose={onClose} title={editing ? "Edit note" : "New note"}>
-      <form onSubmit={(e) => { e.preventDefault(); onSave({ title, content, color, pinned }); }} className="space-y-4">
+      <form onSubmit={(e) => { e.preventDefault(); onSave({ title, content, color, pinned, task_id: taskId || null }); }} className="space-y-4">
         <Field label="Title"><input value={title} onChange={(e)=>setTitle(e.target.value)} className={inputClass} /></Field>
         <Field label="Content"><textarea rows={8} value={content} onChange={(e)=>setContent(e.target.value)} className={inputClass} placeholder="Markdown supported…" /></Field>
+        <Field label="Link to task (optional)">
+          <select value={taskId} onChange={(e) => setTaskId(e.target.value)} className={inputClass}>
+            <option value="">— None —</option>
+            {(tasks ?? []).map((t: any) => (
+              <option key={t.id} value={t.id}>{t.completed ? "✓ " : ""}{t.title}</option>
+            ))}
+          </select>
+        </Field>
         <div className="flex items-center justify-between">
           <div className="flex gap-1.5">
             {COLORS.map(c => (
