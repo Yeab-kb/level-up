@@ -2,16 +2,17 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { LayoutDashboard, ListTodo, Calendar, Timer, NotebookPen, BarChart3, Settings, Sparkles, LogOut, Sun, Moon, BookOpen } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useProfile } from "@/lib/data-hooks";
 import { useTheme } from "@/lib/theme-context";
 import { toast } from "sonner";
 
 export const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/subjects", label: "Subjects", icon: BookOpen },
   { to: "/tasks", label: "Tasks", icon: ListTodo },
   { to: "/calendar", label: "Calendar", icon: Calendar },
   { to: "/timer", label: "Timer", icon: Timer },
   { to: "/notes", label: "Notes", icon: NotebookPen },
-  { to: "/subjects", label: "Subjects", icon: BookOpen },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
