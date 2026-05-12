@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Pin, Search, Trash2, NotebookPen } from "lucide-react";
-import { useNotes, useUpsertNote, useDeleteNote, type Note } from "@/lib/data-hooks";
+import { Plus, Pin, Search, Trash2, NotebookPen, ListTodo } from "lucide-react";
+import { useNotes, useUpsertNote, useDeleteNote, useTasks, type Note } from "@/lib/data-hooks";
 import { Modal, Empty, PageHeader, GradientButton, Field, inputClass } from "@/components/ui-bits";
 import { format } from "date-fns";
 
