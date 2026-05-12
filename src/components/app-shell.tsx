@@ -2,16 +2,17 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { LayoutDashboard, ListTodo, Calendar, Timer, NotebookPen, BarChart3, Settings, Sparkles, LogOut, Sun, Moon, BookOpen } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useProfile } from "@/lib/data-hooks";
 import { useTheme } from "@/lib/theme-context";
 import { toast } from "sonner";
 
 export const navItems = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/subjects", label: "Subjects", icon: BookOpen },
   { to: "/tasks", label: "Tasks", icon: ListTodo },
   { to: "/calendar", label: "Calendar", icon: Calendar },
   { to: "/timer", label: "Timer", icon: Timer },
   { to: "/notes", label: "Notes", icon: NotebookPen },
-  { to: "/subjects", label: "Subjects", icon: BookOpen },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
@@ -19,7 +20,10 @@ export const navItems = [
 export function AppSidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const { user, signOut } = useAuth();
+  const { data: profile } = useProfile();
   const { theme, toggle } = useTheme();
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User";
+  const initial = (displayName?.[0] ?? user?.email?.[0] ?? "?").toUpperCase();
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar/80 backdrop-blur-xl md:flex">
@@ -63,10 +67,10 @@ export function AppSidebar() {
         </button>
         <div className="flex items-center gap-3 rounded-xl bg-sidebar-accent/60 px-3 py-2">
           <div className="grid h-8 w-8 place-items-center rounded-full gradient-primary text-xs font-bold text-primary-foreground">
-            {(user?.email?.[0] ?? "?").toUpperCase()}
+            {initial}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-medium">{user?.user_metadata?.full_name ?? user?.email?.split("@")[0]}</p>
+            <p className="truncate text-xs font-medium">{displayName}</p>
             <p className="truncate text-[10px] text-muted-foreground">{user?.email}</p>
           </div>
           <button

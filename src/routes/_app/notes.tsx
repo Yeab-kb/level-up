@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Pin, Search, Trash2, NotebookPen } from "lucide-react";
-import { useNotes, useUpsertNote, useDeleteNote, type Note } from "@/lib/data-hooks";
+import { Plus, Pin, Search, Trash2, NotebookPen, ListTodo } from "lucide-react";
+import { useNotes, useUpsertNote, useDeleteNote, useTasks, type Note } from "@/lib/data-hooks";
 import { Modal, Empty, PageHeader, GradientButton, Field, inputClass } from "@/components/ui-bits";
 import { format } from "date-fns";
 
@@ -23,6 +23,7 @@ const colorBg: Record<string,string> = {
 
 function NotesPage() {
   const { data: notes = [] } = useNotes();
+  const { data: tasks = [] } = useTasks();
   const upsert = useUpsertNote();
   const del = useDeleteNote();
   const [open, setOpen] = useState(false);
@@ -64,7 +65,15 @@ function NotesPage() {
                   <h3 className="line-clamp-1 font-display text-base font-semibold">{n.title}</h3>
                   {n.pinned && <Pin className="h-3.5 w-3.5 fill-warning text-warning" />}
                 </div>
-                <p className="line-clamp-5 flex-1 whitespace-pre-wrap text-xs text-muted-foreground">{n.content || "Empty note"}</p>
+                <p className="line-clamp-4 flex-1 whitespace-pre-wrap text-xs text-muted-foreground">{n.content || "Empty note"}</p>
+                {n.task_id && (() => {
+                  const task = tasks.find((t) => t.id === n.task_id);
+                  return task ? (
+                    <span className="mt-2 inline-flex max-w-full items-center gap-1 self-start truncate rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                      <ListTodo className="h-3 w-3 shrink-0" /> <span className="truncate">{task.title}</span>
+                    </span>
+                  ) : null;
+                })()}
                 <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
                   <span>{format(new Date(n.updated_at), "MMM d")}</span>
                   <span onClick={(e) => { e.stopPropagation(); del.mutate(n.id); }} className="cursor-pointer rounded-md p-1 opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100">
@@ -78,30 +87,40 @@ function NotesPage() {
       )}
 
       <NoteModal
-        open={open} onClose={() => setOpen(false)} editing={editing}
+        open={open} onClose={() => setOpen(false)} editing={editing} tasks={tasks}
         onSave={(data: any) => { upsert.mutate({ id: editing?.id, ...data }); setOpen(false); }}
       />
     </div>
   );
 }
 
-function NoteModal({ open, onClose, editing, onSave }: any) {
+function NoteModal({ open, onClose, editing, tasks, onSave }: any) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [color, setColor] = useState("default");
   const [pinned, setPinned] = useState(false);
+  const [taskId, setTaskId] = useState<string>("");
   useEffect(() => {
     setTitle(editing?.title ?? "Untitled");
     setContent(editing?.content ?? "");
     setColor(editing?.color ?? "default");
     setPinned(editing?.pinned ?? false);
+    setTaskId(editing?.task_id ?? "");
   }, [editing?.id]);
 
   return (
     <Modal open={open} onClose={onClose} title={editing ? "Edit note" : "New note"}>
-      <form onSubmit={(e) => { e.preventDefault(); onSave({ title, content, color, pinned }); }} className="space-y-4">
+      <form onSubmit={(e) => { e.preventDefault(); onSave({ title, content, color, pinned, task_id: taskId || null }); }} className="space-y-4">
         <Field label="Title"><input value={title} onChange={(e)=>setTitle(e.target.value)} className={inputClass} /></Field>
         <Field label="Content"><textarea rows={8} value={content} onChange={(e)=>setContent(e.target.value)} className={inputClass} placeholder="Markdown supported…" /></Field>
+        <Field label="Link to task (optional)">
+          <select value={taskId} onChange={(e) => setTaskId(e.target.value)} className={inputClass}>
+            <option value="">— None —</option>
+            {(tasks ?? []).map((t: any) => (
+              <option key={t.id} value={t.id}>{t.completed ? "✓ " : ""}{t.title}</option>
+            ))}
+          </select>
+        </Field>
         <div className="flex items-center justify-between">
           <div className="flex gap-1.5">
             {COLORS.map(c => (
