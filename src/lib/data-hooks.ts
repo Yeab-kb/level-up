@@ -145,10 +145,10 @@ export function useUpsertNote() {
   return useMutation({
     mutationFn: async (n: Partial<Note> & { id?: string }) => {
       if (n.id) {
-        const { data, error } = await supabase.from("notes").update({ title: n.title, content: n.content, color: n.color, pinned: n.pinned, updated_at: new Date().toISOString() }).eq("id", n.id).select().single();
+        const { data, error } = await supabase.from("notes").update({ title: n.title, content: n.content, color: n.color, pinned: n.pinned, task_id: n.task_id ?? null, updated_at: new Date().toISOString() }).eq("id", n.id).select().single();
         if (error) throw error; return data;
       }
-      const { data, error } = await supabase.from("notes").insert({ user_id: user!.id, title: n.title ?? "Untitled", content: n.content ?? "", color: n.color ?? "default", pinned: n.pinned ?? false }).select().single();
+      const { data, error } = await supabase.from("notes").insert({ user_id: user!.id, title: n.title ?? "Untitled", content: n.content ?? "", color: n.color ?? "default", pinned: n.pinned ?? false, task_id: n.task_id ?? null }).select().single();
       if (error) throw error; return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["notes"] }),
