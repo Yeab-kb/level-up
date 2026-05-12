@@ -67,10 +67,10 @@ export function AppSidebar() {
         </button>
         <div className="flex items-center gap-3 rounded-xl bg-sidebar-accent/60 px-3 py-2">
           <div className="grid h-8 w-8 place-items-center rounded-full gradient-primary text-xs font-bold text-primary-foreground">
-            {(user?.email?.[0] ?? "?").toUpperCase()}
+            {initial}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-medium">{user?.user_metadata?.full_name ?? user?.email?.split("@")[0]}</p>
+            <p className="truncate text-xs font-medium">{displayName}</p>
             <p className="truncate text-[10px] text-muted-foreground">{user?.email}</p>
           </div>
           <button
