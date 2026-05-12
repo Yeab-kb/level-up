@@ -65,7 +65,15 @@ function NotesPage() {
                   <h3 className="line-clamp-1 font-display text-base font-semibold">{n.title}</h3>
                   {n.pinned && <Pin className="h-3.5 w-3.5 fill-warning text-warning" />}
                 </div>
-                <p className="line-clamp-5 flex-1 whitespace-pre-wrap text-xs text-muted-foreground">{n.content || "Empty note"}</p>
+                <p className="line-clamp-4 flex-1 whitespace-pre-wrap text-xs text-muted-foreground">{n.content || "Empty note"}</p>
+                {n.task_id && (() => {
+                  const task = tasks.find((t) => t.id === n.task_id);
+                  return task ? (
+                    <span className="mt-2 inline-flex max-w-full items-center gap-1 self-start truncate rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                      <ListTodo className="h-3 w-3 shrink-0" /> <span className="truncate">{task.title}</span>
+                    </span>
+                  ) : null;
+                })()}
                 <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
                   <span>{format(new Date(n.updated_at), "MMM d")}</span>
                   <span onClick={(e) => { e.stopPropagation(); del.mutate(n.id); }} className="cursor-pointer rounded-md p-1 opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100">
