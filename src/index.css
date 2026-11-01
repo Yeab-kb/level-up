@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #0b0f19;
+    color: #f3f4f6;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* Subtle Scenic Background Animation */
+@keyframes float-slow {
+  0% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(-15px) translateX(10px); }
+  100% { transform: translateY(0px) translateX(0px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+
+.scenic-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0b0f19 70%);
+}
+
+.scenic-orb-1 {
+  position: absolute;
+  top: 10%;
+  left: 15%;
+  width: 350px;
+  height: 350px;
+  background: rgba(59, 130, 246, 0.12);
+  filter: blur(80px);
+  border-radius: 50%;
+  animation: float-slow 12s ease-in-out infinite;
+}
+
+.scenic-orb-2 {
+  position: absolute;
+  bottom: 15%;
+  right: 10%;
+  width: 450px;
+  height: 450px;
+  background: rgba(16, 185, 129, 0.08);
+  filter: blur(100px);
+  border-radius: 50%;
+  animation: pulse-glow 8s ease-in-out infinite;
+}
